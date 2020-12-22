@@ -1,5 +1,5 @@
 import 'source-map-support/register';
-import App from './src/App';
+import App from './App';
 import * as express from 'express';
 import {Server} from 'socket.io';
 import * as http from 'http';
