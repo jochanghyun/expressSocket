@@ -1,58 +1,102 @@
-'use strict'
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const context = path.join(__dirname, '');
 module.exports = {
-  mode: 'production',
-  entry: [
-    './src/views/ts/index.ts',
-  ],
-  output: {
-    filename: '[name].[hash].js',
-    path: path.resolve(__dirname, 'dist')
+
+  devServer: {
+    hot: true,
+    historyApiFallback: true,
+    compress: true,
+    publicPath: '/dist',
+    contentBase: path.resolve(__dirname, '/src'),
+    disableHostCheck: true,
+    host: 'localhost',
+    port: 3001,
+    watchOptions: {
+      poll: true
+    },
+
+    proxy: {
+      "**": {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        ignorePath: false,
+        secure: false
+      },
+    }
+  },
+  mode: 'development',
+  devtool: 'eval',
+  resolve: {
+
+    modules: ['node_modules'],
+    extensions: ['.ts', 'json', '.jsx', '.scss', '.css', '.js'],
+    aliasFields: ['browser', 'browser.esm'],
+    alias: {
+      'socket.io-client': path.join(__dirname, 'node_modules/socket.io.client/socket.io.js')
+    }
+  },
+  entry: {
+    main: [path.join(context, 'src/views/ts/index.ts')],
+    chat: [path.join(context, 'src/views/ts/chat.ts')]
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.ts$/,
+        use: ['ts-loader'],
+        exclude: ["/node_modules"],
+      },
+      {
+        test: /\.html$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader'
+          {
+            loader: 'html-loader',
+            options: { minimize: true }
+          }
         ]
       },
       {
-        test: /\.ts$/,
+        test: /\.css$/,
         use: [
-          'ts-loader'
-        ],
-        exclude: ["/node_modules"]
-      }
-    ]
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+
+        ]
+      },
+      {
+        test: /\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            name: './[path][hash].[ext]',
+            limit: 10 * 1024
+          }
+        }
+      },
+    ],
+    noParse: [/socket.io-client/]
   },
+
   plugins: [
-    /**
-     * Remove build folder before building.
-     * @see https://github.com/johnagan/clean-webpack-plugin
-     */
-    new CleanWebpackPlugin(),
-    /**
-     * Simplifies creation of HTML files to serve your webpack bundles.
-     * @see https://github.com/jantimon/html-webpack-plugin
-     */
-    new HtmlWebpackPlugin({
-      filename: './src/views/index.html',
-      template: './src/index.ejs'
+    new HtmlWebPackPlugin({
+      template: path.join(context, 'src/index.html'),
+      filename: './index.html',
+      showErrors: true
     }),
-    /**
-     * This plugin extracts CSS into separate files.
-     * It creates a CSS file per JS file which contains CSS.
-     * @see https://github.com/webpack-contrib/mini-css-extract-plugin
-     */
     new MiniCssExtractPlugin({
-      chunkFilename: 'static/css/[name].[hash].css',
-      filename: 'static/[name].[hash].css'
+      filename: '[name].css',
+      chunkFilename: '[id].css'
     })
-  ]
+  ],
+
+  externals: {
+    'socket.io-client': 'io',
+  },
+  output: {
+    path: path.join(__dirname, 'dist/'),
+    filename: '[name].js'
+  },
+
 }
