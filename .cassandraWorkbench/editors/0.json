@@ -1,0 +1,1 @@
+{"id":"0VdQuXnYGKr3SNbx","clusterName":"Cluster AllowAllAuthenticator","keyspace":"chatdata","body":"drop table chats;","modified":true,"filename":"script_4.cql","source":"action"}

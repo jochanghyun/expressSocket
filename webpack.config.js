@@ -58,6 +58,18 @@ module.exports = {
         ]
       },
       {
+        test: /\.ejs$/,
+        use: {
+          loader: 'ejs-compiled-loader',
+          options: {
+            htmlmin: true,
+            htmlminOptions: {
+              removeComments: true
+            }
+          }
+        }
+      },
+      {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
@@ -94,6 +106,7 @@ module.exports = {
   externals: {
     'socket.io-client': 'io',
   },
+
   output: {
     path: path.join(__dirname, 'dist/'),
     filename: '[name].js'

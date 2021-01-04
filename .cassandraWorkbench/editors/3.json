@@ -1,0 +1,1 @@
+{"id":"twIVrNejQ0zoDUZf","clusterName":"Cluster AllowAllAuthenticator","keyspace":"chatdata","body":"insert into chats(roomname,id,chattime,comment) \r\n    values('javascript','조창현13122','2021-1-1','안녕');","modified":true,"filename":"script_1.cql","source":"action"}
