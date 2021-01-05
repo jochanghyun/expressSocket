@@ -2,7 +2,7 @@ import { Console, timeStamp } from 'console';
 import * as express from 'express';
 import { createServer, Server } from 'http';
 import * as socketio from 'socket.io';
-import { MessageType, UserInfoType } from './types';
+import { MessageType, UserInfoType, chatParamType } from './types';
 import { CassandraConnection } from './cassandraConnection';
 
 
@@ -32,6 +32,7 @@ export class ChatServer {
       console.log(`Running server on port ${this.port}`);
 
     });
+
     this.io.on('connection', (socket: socketio.Socket) => {
 
       socket.on('enterRoom', async (data) => {
@@ -48,6 +49,18 @@ export class ChatServer {
         this.socketsArray = this.socketsArray.filter((item) => item.socketId !== socket.id);
 
       });
+
+      socket.on('chatSubmit', async (data: chatParamType) => {
+        console.time('chatInsert');
+        this.io.in(data.roomName).emit('newChat', data);
+        const result = await this.chatDB.insertChat({
+          table: 'chats',
+          range: { start: 1, end: 2 },
+          chatParams: data
+        });
+        console.timeEnd('chatInsert');
+      })
+
     });
 
   }
@@ -64,7 +77,7 @@ export class ChatServer {
     this.chatDB = new CassandraConnection({
       host: 'localhost',
       keyspace: 'chatdata',
-      port: '9043'
+      port: '9042'
     });
   }
 

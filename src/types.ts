@@ -21,3 +21,27 @@ export declare type CassandraConnectionType = {
   datacenter?: string;
   keyspace: string;
 }
+
+export declare type CassandraSelectType = {
+  table: 'chats' | 'members'
+  range: {
+    start: number,
+    end: number
+  }
+  chatParams?: chatParamType
+  membersParams?: {
+    id: string
+
+  }
+}
+
+export declare type chatParamType = {
+  roomName: string,
+  id: string,
+  chatTime: string,
+  comment: string
+}
+
+export declare type test3 = {
+
+}

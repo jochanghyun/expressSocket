@@ -1,10 +1,13 @@
 CREATE TABLE chats(
-    userid text ,
+    roomname text,
+    chattime text,
     comment text,
-    commentTime text
+    id text,
+    PRIMARY KEY((roomname,id,chattime))
 );
 
 CREATE TABLE members(
-    userid text PRIMARY KEY
+    id text,
+    PRIMARY KEY(id)
 );
 
