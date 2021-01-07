@@ -1,28 +1,28 @@
 
-export declare type UserInfoType = {
+export type UserInfoType = {
   socketId: string;
   userName: string;
   chatRoom: string;
 }
-export declare type MessageType = {
+export type MessageType = {
   contents: string;
   userName: string;
   time: Date;
 }
 
-export declare type roomType = {
+export type roomType = {
   roomName: string;
   members: Array<UserInfoType>;
 }
 
-export declare type CassandraConnectionType = {
+export type CassandraConnectionType = {
   host: string;
   port: string;
   datacenter?: string;
   keyspace: string;
 }
 
-export declare type CassandraSelectType = {
+export type CassandraSelectType = {
   table: 'chats' | 'members'
   range: {
     start: number,
@@ -35,13 +35,10 @@ export declare type CassandraSelectType = {
   }
 }
 
-export declare type chatParamType = {
+export type chatParamType = {
   roomName: string,
   id: string,
   chatTime: string,
   comment: string
 }
 
-export declare type test3 = {
-
-}

@@ -1,9 +1,10 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TsconfigPathPlugin = require('tsconfig-paths-webpack-plugin');
+
 const context = path.join(__dirname, '');
 module.exports = {
-
   devServer: {
     hot: true,
     historyApiFallback: true,
@@ -34,7 +35,8 @@ module.exports = {
     extensions: ['.ts', 'json', '.jsx', '.scss', '.css', '.js'],
     aliasFields: ['browser', 'browser.esm'],
     alias: {
-      'socket.io-client': path.join(__dirname, 'node_modules/socket.io.client/socket.io.js')
+      'socket.io-client': path.join(__dirname, 'node_modules/socket.io.client/socket.io.js'),
+      'types': path.join(__dirname, 'src/types.ts')
     }
   },
   entry: {
@@ -100,11 +102,17 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css'
+    }),
+    new TsconfigPathPlugin({
+      configFile: path.join(__dirname, "tsconfig.json"),
+      baseUrl: __dirname,
+      extensions: [".js", ".ts", ".tsx"],
     })
   ],
 
   externals: {
     'socket.io-client': 'io',
+    'types': 'types'
   },
 
   output: {

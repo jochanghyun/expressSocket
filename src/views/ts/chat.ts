@@ -4,7 +4,6 @@ import { chatParamType } from "../../types";
 import { datastax } from "cassandra-driver";
 
 
-
 class chatPage {
   private socket: Socket;
   private roomName: string;

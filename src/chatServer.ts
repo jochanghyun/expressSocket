@@ -2,9 +2,8 @@ import { Console, timeStamp } from 'console';
 import * as express from 'express';
 import { createServer, Server } from 'http';
 import * as socketio from 'socket.io';
-import { MessageType, UserInfoType, chatParamType } from './types';
+import { MessageType, UserInfoType, chatParamType } from "./types";
 import { CassandraConnection } from './cassandraConnection';
-
 
 export class ChatServer {
   public static readonly PORT: number = 3000;
