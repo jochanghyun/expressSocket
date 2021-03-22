@@ -3,7 +3,9 @@ import * as express from 'express';
 import { createServer, Server } from 'http';
 import * as socketio from 'socket.io';
 import { MessageType, UserInfoType, chatParamType } from "./types";
-import { CassandraConnection } from './cassandraConnection';
+// import { CassandraConnection } from './cassandraConnection';
+import {Db,MongoClient,MongoClientOptions} from 'mongodb';
+
 
 export class ChatServer {
   public static readonly PORT: number = 3000;
@@ -12,8 +14,8 @@ export class ChatServer {
   private server: Server;
   private io: socketio.Server;
   private socketsArray: Array<UserInfoType> = [];
-  private chatDB: CassandraConnection;
-
+  private chatDB : Db;
+  
   constructor() {
     this.createApp();
     this.config();
@@ -52,11 +54,14 @@ export class ChatServer {
       socket.on('chatSubmit', async (data: chatParamType) => {
         console.time('chatInsert');
         this.io.in(data.roomName).emit('newChat', data);
-        const result = await this.chatDB.insertChat({
-          table: 'chats',
-          range: { start: 1, end: 2 },
-          chatParams: data
-        });
+        // const result = await this.chatDB.insertChat({
+        //   table: 'chats',
+        //   range: { start: 1, end: 2 },
+        //   chatParams: data
+        // });
+        const chatTable = this.chatDB.collection('chat');
+        chatTable.insertOne(data);
+        
         console.timeEnd('chatInsert');
       })
 
@@ -73,11 +78,22 @@ export class ChatServer {
     this.app.set('views', __dirname + '/views');
   }
   private setDataBase(): void {
-    this.chatDB = new CassandraConnection({
-      host: 'localhost',
-      keyspace: 'chatdata',
-      port: '9042'
+    const client = new MongoClient(
+      "mongodb+srv://JoChangHyun:96969595z!@cluster0.s12nh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+      {useNewUrlParser:true, useUnifiedTopology:true}
+    );
+    client.connect((err,dataBase)=>{
+      this.chatDB = dataBase.db('chat');
+    // perform actions on the collection object
+      if(err) client.close();
     });
+    
+    // this.chatDB = new CassandraConnection({
+    //   host: 'localhost',
+    //   keyspace: 'chatdata',
+    //   port: '9042'
+    // });
+  
   }
 
 

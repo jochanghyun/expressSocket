@@ -15,7 +15,7 @@ class chatPage {
     this.roomName = location.href.slice(location.href.indexOf('room')).replace('room=', '');
     this.userName = decodeURI(location.href.slice(location.href.indexOf('username='), location.href.indexOf('&'))
       .replace('username=', ''));
-
+    console.log(this.roomName);
   }
 
 
@@ -36,6 +36,7 @@ class chatPage {
       const template = require('../templates/chat/message.ejs');
       const newMessage = template(
         {
+          roomName:this.roomName,
           id: decodeURI(data.userName),
           chatTime: moment().format('YYYY-MM-DD HH : MM'),
           comment: `${decodeURI(data.userName)} 입장하셨습니다`,
